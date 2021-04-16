@@ -18,7 +18,7 @@ Mon_fichier_S = "GSE80474_Scerevisiae_normalized.txt"
 distance_methode = "Euclidean"          #"Euclidean" -ou- "Correlation"
 
 #nombre de cluster que l'on veux faire
-nb_cluster = 10
+nb_cluster = 7
 #algorithe à utiliser pour faire les clusters
 method_utilisee = "kmeans"    # "kmeans" -ou- "HCL" 
 
@@ -73,17 +73,19 @@ plotGenes <- function(expData, title = "", yMax = NULL, meanProfile = TRUE){
 F1_lecture_donnée <- function(Nom_de_fichier, Chemin_acces = "./"){
   expMatrix = read.table(paste0(Chemin_acces,Nom_de_fichier), header = T, row.names = 1)
   
+  # Si  des gènes ne sont pas exrimer
   if (is.element(T, rowSums(expMatrix) <= ncol(expMatrix))){
-    # Mettre à part les gènes qui ne sont pas exprimés
+    # Mettre à part les genes qui ne sont pas exprimés
     expMatrix_1 = expMatrix[rowSums(expMatrix) <= ncol(expMatrix),]
     
-    # Supprimer les gènes qui ne sont pas exprimés
+    # Supprimer les genes qui ne sont pas exprimés
     expMatrix = expMatrix[rowSums(expMatrix) > ncol(expMatrix),]
     
-    return(list(expMatrix, expMatrix_1))
-  }
-  else {
+    return(list(expMatrix, expMatrix_1)) 
+    # L'element retourné par la fonction est une liste contantant les 2 tableau de donnée (celui des gènes non eximer et celui des autres gènes)
+  } else {
     return(expMatrix)
+    # L'élement retourné est le jeu de donné entier
   }
   
 }
@@ -97,13 +99,11 @@ F2_matrice_distance <- function(data, distance){
   }else if (distance == "Correlation"){
     matDist = as.dist(1 - cor(t(data)))
   } 
-  
 }
 
 
 # Fonction 3 : Application de l’algorithme de regroupement
 F3_Algorithme_regroupement <- function(matDist, nb_cluster, method){
-  
   # Choisir le type d'algorithme utilisé pour faire les clusters
   if (method  == "kmeans"){
     res = kmeans(matDist, nb_cluster)
@@ -128,6 +128,7 @@ F4_Extraction_profil_un_cluster <- function(data, vecCluster, numero_de_cluster)
 
 # Fonction 5 : Représentation graphique des résultats
 F5_Representation_graphique <- function(data, cluster, graph_type, selected_cluster, distance, method, nb_cluster){
+  
   if (is.element(TRUE,graph_type == "profils")) {
     plotGenes(cluster, 
               title = paste("Cluster", selected_cluster, "\n",
@@ -137,8 +138,12 @@ F5_Representation_graphique <- function(data, cluster, graph_type, selected_clus
               yMax = max(cluster)
               ) 
   }
+  
   if (is.element(TRUE,graph_type == "heatmap")){
-    if (nrow(cluster)>1){
+    
+    #Permet d'éviter les erreur génréer par les cluster ne contenat qu'un gènes pour lesquel on ne peux pas produire de heatmap
+    if (nrow(cluster)>1){ 
+      
       heatmap(as.matrix(cluster),
             Colv = NA, Rowv = NA,
             main  = paste("\n","\n","Cluster", selected_cluster,"\n","Distance :",distance,"-",
@@ -154,6 +159,7 @@ Fonction_finale <- function(Nom_de_fichier, Chemin_acces = "./",
                             distance, nb_cluster, method,
                             graph_type){
 
+  # Permet de gérer le type de sortie de l'ouverture des fichiers selon qu'1 ou 2 tableau soient générer par la fonction F1
   if(is.list(F1_lecture_donnée(Nom_de_fichier))){
     expMatrix = F1_lecture_donnée(Nom_de_fichier)[[1]]
     expMatrix_1 = F1_lecture_donnée(Nom_de_fichier)[[2]]
@@ -173,7 +179,7 @@ Fonction_finale <- function(Nom_de_fichier, Chemin_acces = "./",
     par(mfrow = c(2,2))
   }
   
-  
+  # Si un tableau avec les données des gnène non exrpimé est générer alors on fait les graphiques correspondnats
   if(!is.null(expMatrix_1)){
     vecCluster_0 = rep(0, nrow(expMatrix_1))
     names(vecCluster_0) = rownames(expMatrix_1)
@@ -186,6 +192,7 @@ Fonction_finale <- function(Nom_de_fichier, Chemin_acces = "./",
     
   }
   
+  # Faire les graphiques pour chacun des clusters générés la la fonction F3
   for (selected_cluster in 1:nb_cluster){
     cluster = F4_Extraction_profil_un_cluster(expMatrix, vecCluster,
                                               selected_cluster)
