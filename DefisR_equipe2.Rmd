@@ -21,37 +21,37 @@ Charger le fichier contenant nos fonctions
 path = "C:/Users/omics/defisR/scripts-melanie/"
 source(paste0(path, "Fonctions_DefisR.R"), encoding = "UTF-8")
 ```
-`path` permet de de définir ou ont ranger les fichier que l'on veux ouvrir
+`path` permet de de définir ou sont rangées les fichiers que l'on veux ouvrir
 
 # Détail de nos fonctions
 
 ## Lecture des données
-La fonction permet d'ouvrir les fichiers texte contenant les tableaux de compatge. La fonction permet égalment de  mettre dans un tableau à part les gènes qui ne sont pas exprimés de manière à ce que ces gènes ne perturbe pas le clustering.
+La fonction permet d'ouvrir les fichiers texte contenant les tableaux de comptage. La fonction permet également de  mettre dans un tableau à part les gènes qui ne sont pas exprimés de manière à ce qu'ils ne perturbent pas le clustering.
 
-```{r Lecture des donnees}
+```{r Lecture des données}
 F1_lecture_donnée <- function(Nom_de_fichier, Chemin_acces = "./"){
   expMatrix = read.table(paste0(Chemin_acces,Nom_de_fichier), header = T, row.names = 1)
   
-  # Si  des gènes ne sont pas exrimer
+  # Si  des gènes ne sont pas exrimés
   if (is.element(T, rowSums(expMatrix) <= ncol(expMatrix))){
-    # Mettre à part les genes qui ne sont pas exprimés
+    # Mettre à part les gènes qui ne sont pas exprimés
     expMatrix_1 = expMatrix[rowSums(expMatrix) <= ncol(expMatrix),]
     
-    # Supprimer les genes qui ne sont pas exprimés
+    # Supprimer les gènes qui ne sont pas exprimés
     expMatrix = expMatrix[rowSums(expMatrix) > ncol(expMatrix),]
     
     return(list(expMatrix, expMatrix_1)) 
-    # L'element retourné par la fonction est une liste contantant les 2 tableau de donnée (celui des gènes non eximer et celui des autres gènes)
+    # L'élément retourné par la fonction est une liste contenant les 2 tableaux de données (celui des gènes non exprimés et celui des autres gènes)
   } else {
     return(expMatrix)
-    # L'élement retourné est le jeu de donné entier
+    # L'élément retourné est le jeu de données entier
   }
   
 }
 ```
 
 
-Les fonctions on été testée sur les 3 jeux de données suivant.
+Les fonctions on été testées sur les 3 jeux de données suivants.
 En choisir un pour commencer
 ```{r Donnes disponibles, eval=FALSE}
 Nom_de_fichier = "Mito_Genes.txt"
@@ -61,7 +61,7 @@ Nom_de_fichier = "GSE80474_Scerevisiae_normalized.txt"
 
 
 ## Calcule des matrices de distance
-On veux pouvoir utiliser 2 types de matrice de distance. La distance entre les gènes est calulées soit avec des distances Eulidienne soit avec une matrice de Corrélation.
+On veut pouvoir utiliser 2 types de matrice de distance. La distance entre les gènes est calulées soit avec des distances Euclidienne soit avec une matrice de corrélation.
 
 ```{r Calcul de la matrice de distance}
 F2_matrice_distance <- function(data, distance){
@@ -74,13 +74,13 @@ F2_matrice_distance <- function(data, distance){
 ```
 La fonction prend en entrée :
 
-- `data` correspond au tableau content les données de comptage sur lesquel on souhaite appliquer le clustering
-- `distance` correspond à la méthode de calcule de distance que l'on souhaite employer
+- `data` correspond au tableau contenant les données de comptage sur lesquelles on souhaite appliquer le clustering
+- `distance` correspond à la méthode de calcul de distance que l'on souhaite employer
 
 
 ## Choix de la méthode de clustering
 
-A nouveau 2 méthodes sont proposées pour fair le regroupement des gènes. Dans les deux cas, la fonctione demander que l'on connaisse (ou que l'on éstime) le nombre de cluster que l'on souhaite obtenir.
+A nouveau 2 méthodes sont proposées pour faire le regroupement des gènes. Dans les deux cas, la fonction demande que l'on connaisse (ou que l'on estime) le nombre de clusters que l'on souhaite obtenir.
 
 ```{r Application de l’algorithme de regroupement}
 F3_Algorithme_regroupement <- function(matDist, nb_cluster, method){
@@ -96,12 +96,12 @@ F3_Algorithme_regroupement <- function(matDist, nb_cluster, method){
 ```
 La fonction prend en entrée :
 
-- `matDist` contient les matrices de distance généres par la fonction précédente
-- `nb_cluster` permet de de choisir le nombre de cluster qui sera généré
+- `matDist` contient les matrices de distance générées par la fonction précédente
+- `nb_cluster` permet de de choisir le nombre de clusters qui seront générés
 - `method` permet de choisir l'algorithme de regroupement des gènes
 
 ## Extraction des profils de gènes pour un cluster donné
-Le foncton vas permettre de sélectionner les gènes du tableau de comptage qui ont été identifié comme faisant parti d'un même cluster.
+Le foncton vas permettre de sélectionner les gènes du tableau de comptage qui ont été identifiés comme faisant partie d'un même cluster.
 
 ```{r Extraction des profils de gènes pour un cluster donné}
 F4_Extraction_profil_un_cluster <- function(data, vecCluster, numero_de_cluster){
@@ -112,11 +112,11 @@ F4_Extraction_profil_un_cluster <- function(data, vecCluster, numero_de_cluster)
 La fonction prend en entrée :
 
 - `data` correspond toujours à notre tableau de comtage
-- `vecCluster` correspond à la sortie de la fonction précédent qui définis quels gènes se trouvent dans quel groupe
+- `vecCluster` correspond à la sortie de la fonction précédente qui définit quels gènes se trouvent dans quel groupe
 - `numero_de_cluster`permet de définir sur quel cluster on se focalise à ce moment
 
 ## Représentation graphique des résultats
-On souhaite pourvoir faire 2 type de représentation graphique : afficher, pour chaque cluster, les profils des gènes et/ou une heatmap
+On souhaite pouvoir faire 2 types de représentations graphiques : afficher, pour chaque cluster, les profils des gènes et/ou une heatmap
 
 
 ```{r Représentation graphique des résultats}
@@ -147,19 +147,19 @@ F5_Representation_graphique <- function(cluster, graph_type, selected_cluster, d
 
 La fonction prend en entrée :
 
-- `cluster` contients le tableau de comptage du cluster pour lequel on veux pour tracer les graphiques
-- `graph_type` pemert de définir le ou les types de graphique que l'on veux obtenir 
+- `cluster` contient le tableau de comptage du cluster pour lequel on veut tracer les graphiques
+- `graph_type` pemet de définir le ou les types de graphiques que l'on veut obtenir 
 - `selected_cluster`permet d'afficher dans le titre du graphique le numéro de cluster correspondant
-- `distance` permet d'afficher dans le titre du graphique la méthode de calcule de distance employée
-- `method` permet d'afficher dans le titre du graphique la méthode de regourpement employée
-- `nb_cluster` permet d'afficher dans le titre du graphique le nombre de cluster demmandé
+- `distance` permet d'afficher dans le titre du graphique la méthode de calcul de distance employée
+- `method` permet d'afficher dans le titre du graphique la méthode de regroupement employée
+- `nb_cluster` permet d'afficher dans le titre du graphique le nombre de clusters demmandé
 
 
-*A noter* :  `if (nrow(cluster)>1)` Permet d'éviter les erreurs génrées par les clusters ne contenat qu'un gènes pour lesquel on ne peux pas produire de heatmap
+*A noter* :  `if (nrow(cluster)>1)` Permet d'éviter les erreurs génrées par les clusters ne contenant qu'un gène pour lesquels on ne peut pas produire de heatmap
 
 # Faire l'analyse en une fonction
 
-Definition de variable teste
+Definition de variable test
 ```{r}
 Nom_de_fichier = "Mito_Genes.txt"
 distance = "Euclidean"
@@ -181,14 +181,14 @@ if(is.list(F1_lecture_donnée(Nom_de_fichier, Chemin_acces = path))){
 }
 ```
 
-La condition `if(is.list(F1_lecture_donnée(Nom_de_fichier)))` vas 
-permetre de gérer le type de sortie de l'ouverture des fichiers selon qu'1 ou 2 tableau soient générer par la fonction F1. Pour rappel la fonction F1, génère 2 fichiers si des gènes du tableau de comptage ne sont pas exprimées.
+La condition `if(is.list(F1_lecture_donnée(Nom_de_fichier)))` va 
+permettre de gérer le type de sortie lors de l'ouverture des fichiers selon qu'1 ou 2 tableaux sont générés par la fonction F1. Pour rappel, la fonction F1 génère 2 fichiers si des gènes du tableau de comptage ne sont pas exprimés.
 
-- `expMatrix` vas contenir uniquement les gènes exprimés qui seront analyser pour le clustering 
-- `expMatrix_1` vas contenir les gènes qui ne sont pas exprimés, ils seront exclu de l'analyse mais apparaiteront au moment de la formation des graphique de manère a montrer q'un certin nombre de gènes du tableau de donnée ne sont pas exprimé.
+- `expMatrix` va contenir uniquement les gènes exprimés qui seront analysés pour le clustering 
+- `expMatrix_1` vas contenir les gènes qui ne sont pas exprimés, ils seront exclu de l'analyse mais appararaitront au moment de la formation des graphiques de manière à montrer q'un certain nombre de gènes du tableau de données ne sont pas exprimés.
 
 
-## Etape 2 - Calcule des matrice de distance et des cluster
+## Etape 2 - Calcul des matrice de distance et des clusters
 
 ```{r Fonction finale - partie 2}
   matDist = F2_matrice_distance(expMatrix, distance)
@@ -197,12 +197,12 @@ permetre de gérer le type de sortie de l'ouverture des fichiers selon qu'1 ou 2
 ```
 
 
-`matDist`vas contenir les matrices des disances qui serviront ensuite à former les clusters
-`vecCluster` est un vecteur qui contiens pour chaque gènes du tableau de comptage le cluster qui lui est attibué.
+`matDist`va contenir les matrices des distances qui serviront ensuite à former les clusters
+`vecCluster` est un vecteur qui contient pour chaque gènes du tableau de comptage le cluster qui lui est attribué.
 
-## Etape 3 - Représentation des graphiques pour chque cluster
+## Etape 3 - Représentation des graphiques pour chaque cluster
 
-La premier partie consiste à savoir si on demmande de produire uniquemen des profils ou si on demmande également des heatmap. Les heatmap ne peuvent pas être affichées toutes sur une même page. On sépare donc les fenêtres d'affichges des profils uniquement si aucune heatmap n'est demmandée.
+La première partie consiste à savoir si on demmande de produire uniquement des profils d'expression ou si on demmande également des heatmaps. Les heatmaps ne peuvent pas être affichées toutes sur une même page. On sépare donc les fenêtres d'affichages des profils uniquement si aucune heatmap n'est demmandée.
 
 ```{r Fonction final - Separation des fenetre}
   if (is.element(FALSE,graph_type == "profils")){
@@ -213,7 +213,7 @@ La premier partie consiste à savoir si on demmande de produire uniquemen des pr
   
 ```
 
-Si un tableau contiens les données de gènes non-exrpimé alors on fait les graphiques correspondants pour ses gènes
+Si un tableau contient les données de gènes non-exprimés alors on fait les graphiques correspondants pour ces gènes
 ```{r Fonction finale - Graphique de sgenes non-exprimés, results='hide'}
   if(!is.null(expMatrix_1)){
     vecCluster_0 = rep(0, nrow(expMatrix_1))
@@ -228,9 +228,9 @@ Si un tableau contiens les données de gènes non-exrpimé alors on fait les gra
   }
 ```
 
-Enfin, pour chaque cluster on extrait du tableau de comptage les gènes faisant parti du cluster puis on produit les graphquies demmandés par la variable `graph_type`
+Enfin, pour chaque cluster on extrait du tableau de comptage les gènes faisant partie du cluster puis on produit les graphiques demmandés par la variable `graph_type`
 
-```{r Fonction finale - formation des graphiqeu pour chque cluster, results= 'hide' }
+```{r Fonction finale - formation des graphique pour chaque cluster, results= 'hide' }
   for (selected_cluster in 1:nb_cluster){
     cluster = F4_Extraction_profil_un_cluster(expMatrix, vecCluster,
                                               selected_cluster)
@@ -256,11 +256,11 @@ Fonction_finale(Nom_de_fichier,
 
 ```
 
-La fonction peux prendre différentes entrées :
+La fonction peut prendre différentes entrées :
 
-- `Nom_de_fichier` contiens le nom du fichier à ouvrir
-- `distance` peux prendre les valeur `"Euclidean"` -ou- `"Correlation"`
-- `nb_cluster`permet d'indiquer le nombre de culster que l'on souhaite générer
-- `method`peux prendre les valeurs `"kmeans"` -ou- `"HCL"` (pour le clustering hérérchique)
-- `graph_type` peux prendre les valeurs `"heatmap"` -ou- `"profils"` -ou- `c("heatmap","profils")` (qui permet de générer les 2 types de graphique en même temps)
+- `Nom_de_fichier` contient le nom du fichier à ouvrir
+- `distance` peut prendre les valeurs `"Euclidean"` -ou- `"Correlation"`
+- `nb_cluster`permet d'indiquer le nombre de cluster que l'on souhaite générer
+- `method`peut prendre les valeurs `"kmeans"` -ou- `"HCL"` (pour le clustering hiérarchique)
+- `graph_type` peut prendre les valeurs `"heatmap"` -ou- `"profils"` -ou- `c("heatmap","profils")` (qui permet de générer les 2 types de graphiques en même temps)
 
