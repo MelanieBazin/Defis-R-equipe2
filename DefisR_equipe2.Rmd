@@ -21,7 +21,7 @@ Charger le fichier contenant nos fonctions
 path = "C:/Users/omics/defisR/scripts-melanie/"
 source(paste0(path, "Fonctions_DefisR.R"), encoding = "UTF-8")
 ```
-`path` permet de de définir ou sont rangées les fichiers que l'on veux ouvrir
+`path` permet de définir où sont rangées les fichiers que l'on veut ouvrir
 
 # Détail de nos fonctions
 
