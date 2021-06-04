@@ -7,6 +7,7 @@ output:
     toc: yes
     theme: cerulean
     df_print: kable
+    fig_caption: true
 editor_options: 
   chunk_output_type: console
 ---
@@ -214,7 +215,7 @@ La première partie consiste à savoir si on demmande de produire uniquement des
 ```
 
 Si un tableau contient les données de gènes non-exprimés alors on fait les graphiques correspondants pour ces gènes
-```{r Fonction finale - Graphique de sgenes non-exprimés, results='hide'}
+```{r Fonction finale - Graphique de sgenes non-exprimés, fig.show='hide'}
   if(!is.null(expMatrix_1)){
     vecCluster_0 = rep(0, nrow(expMatrix_1))
     names(vecCluster_0) = rownames(expMatrix_1)
@@ -230,7 +231,7 @@ Si un tableau contient les données de gènes non-exprimés alors on fait les gr
 
 Enfin, pour chaque cluster on extrait du tableau de comptage les gènes faisant partie du cluster puis on produit les graphiques demmandés par la variable `graph_type`
 
-```{r Fonction finale - formation des graphique pour chaque cluster, results= 'hide' }
+```{r Fonction finale - formation des graphique pour chaque cluster, fig.show='hide' }
   for (selected_cluster in 1:nb_cluster){
     cluster = F4_Extraction_profil_un_cluster(expMatrix, vecCluster,
                                               selected_cluster)
@@ -246,7 +247,15 @@ Enfin, pour chaque cluster on extrait du tableau de comptage les gènes faisant 
 # Exécution de la fonction
 Afin d'obtenir les résultats on exécute la fonction 
 
-```{r Fonction finale, results = 'hold'}
+La fonction peut prendre différentes entrées :
+
+- `Nom_de_fichier` contient le nom du fichier à ouvrir
+- `distance` peut prendre les valeurs `"Euclidean"` -ou- `"Correlation"`
+- `nb_cluster`permet d'indiquer le nombre de cluster que l'on souhaite générer
+- `method`peut prendre les valeurs `"kmeans"` -ou- `"HCL"` (pour le clustering hiérarchique)
+- `graph_type` peut prendre les valeurs `"heatmap"` -ou- `"profils"` -ou- `c("heatmap","profils")` (qui permet de générer les 2 types de graphiques en même temps)
+
+```{r Fonction finale, fig.show='hold'}
 Fonction_finale(Nom_de_fichier,
                   distance = "Euclidean" ,
                   nb_cluster = 4,
@@ -256,11 +265,5 @@ Fonction_finale(Nom_de_fichier,
 
 ```
 
-La fonction peut prendre différentes entrées :
 
-- `Nom_de_fichier` contient le nom du fichier à ouvrir
-- `distance` peut prendre les valeurs `"Euclidean"` -ou- `"Correlation"`
-- `nb_cluster`permet d'indiquer le nombre de cluster que l'on souhaite générer
-- `method`peut prendre les valeurs `"kmeans"` -ou- `"HCL"` (pour le clustering hiérarchique)
-- `graph_type` peut prendre les valeurs `"heatmap"` -ou- `"profils"` -ou- `c("heatmap","profils")` (qui permet de générer les 2 types de graphiques en même temps)
 
